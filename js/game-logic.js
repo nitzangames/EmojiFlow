@@ -35,11 +35,20 @@ function createGameState(board, palette, levelNumber, levelDef) {
     board: new Uint8Array(board),
     columns: columns,
     waitSlots: [null, null, null, null, null],
-    activeShooter: null,
+    orbitingCount: 0, // number of shooters currently on the track
     totalAmmo: totalAmmo,
     ammoUsed: 0,
     status: 'playing',
   };
+}
+
+// Count how many shooters are currently "out" (orbiting + in wait slots)
+function countOutShooters(state) {
+  var count = state.orbitingCount;
+  for (var s = 0; s < NUM_WAIT_SLOTS; s++) {
+    if (state.waitSlots[s] !== null) count++;
+  }
+  return count;
 }
 
 // Compute all shots a shooter takes during one clockwise orbit
@@ -51,40 +60,48 @@ function computeOrbit(board, colorIndex) {
   // Edge 0: Bottom — move L→R, fire UP each column
   for (var col = 0; col < size; col++) {
     for (var row = size - 1; row >= 0; row--) {
-      if (board[row * size + col] === colorIndex) {
+      var ci = board[row * size + col];
+      if (ci === 255) continue; // empty, keep scanning
+      if (ci === colorIndex) {
         hits.push({ edge: 0, pos: col, row: row, col: col });
-        break;
       }
+      break; // blocked by this cube whether it matches or not
     }
   }
 
   // Edge 1: Right — move B→T, fire LEFT each row
   for (var row = size - 1; row >= 0; row--) {
     for (var col = size - 1; col >= 0; col--) {
-      if (board[row * size + col] === colorIndex) {
+      var ci = board[row * size + col];
+      if (ci === 255) continue;
+      if (ci === colorIndex) {
         hits.push({ edge: 1, pos: size - 1 - row, row: row, col: col });
-        break;
       }
+      break;
     }
   }
 
   // Edge 2: Top — move R→L, fire DOWN each column
   for (var col = size - 1; col >= 0; col--) {
     for (var row = 0; row < size; row++) {
-      if (board[row * size + col] === colorIndex) {
+      var ci = board[row * size + col];
+      if (ci === 255) continue;
+      if (ci === colorIndex) {
         hits.push({ edge: 2, pos: size - 1 - col, row: row, col: col });
-        break;
       }
+      break;
     }
   }
 
   // Edge 3: Left — move T→B, fire RIGHT each row
   for (var row = 0; row < size; row++) {
     for (var col = 0; col < size; col++) {
-      if (board[row * size + col] === colorIndex) {
+      var ci = board[row * size + col];
+      if (ci === 255) continue;
+      if (ci === colorIndex) {
         hits.push({ edge: 3, pos: row, row: row, col: col });
-        break;
       }
+      break;
     }
   }
 
@@ -105,6 +122,8 @@ function applyOrbit(state, hits, shooter) {
     }
   }
 
+  state.orbitingCount--;
+
   var dest;
   if (shooter.ammo > 0) {
     var placed = false;
@@ -120,32 +139,30 @@ function applyOrbit(state, hits, shooter) {
     dest = 'removed';
   }
 
-  state.activeShooter = null;
   return { hitsApplied: applied, shooterDest: dest };
 }
 
 // Launch the top shooter from a column
 function launchFromColumn(state, colIndex) {
-  if (state.activeShooter !== null) return null;
   if (state.status !== 'playing') return null;
+  if (countOutShooters(state) >= NUM_WAIT_SLOTS) return null;
   var col = state.columns[colIndex];
   if (col.length === 0) return null;
 
   var shooter = col.shift();
-  state.activeShooter = shooter;
+  state.orbitingCount++;
   var hits = computeOrbit(state.board, shooter.colorIndex);
   return { shooter: shooter, hits: hits };
 }
 
 // Launch a shooter from a wait slot
 function launchFromWaitSlot(state, slotIndex) {
-  if (state.activeShooter !== null) return null;
   if (state.status !== 'playing') return null;
   var shooter = state.waitSlots[slotIndex];
   if (shooter === null) return null;
 
   state.waitSlots[slotIndex] = null;
-  state.activeShooter = shooter;
+  state.orbitingCount++;
   var hits = computeOrbit(state.board, shooter.colorIndex);
   return { shooter: shooter, hits: hits };
 }
@@ -164,7 +181,8 @@ function checkWinLose(state) {
     return;
   }
 
-  if (state.activeShooter !== null) return;
+  // Can't declare loss while shooters are still orbiting
+  if (state.orbitingCount > 0) return;
 
   var hasShooters = false;
   for (var c = 0; c < state.columns.length; c++) {

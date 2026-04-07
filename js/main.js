@@ -8,6 +8,10 @@ var TitleScene = new Phaser.Class({
   create: function() {
     this.add.rectangle(540, 960, 1080, 1920, 0x0a0a1a);
 
+    this.add.text(540, 1300, 'v5', {
+      fontSize: '36px', fontFamily: 'Arial', color: '#ffffff',
+    }).setOrigin(0.5);
+
     this.add.text(540, 600, 'EMOJI', {
       fontSize: '140px', fontFamily: 'Arial', color: '#4fc3f7', fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -50,6 +54,9 @@ var config = {
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  input: {
+    activePointers: 1,
   },
   scene: [TitleScene, GameScene],
 };

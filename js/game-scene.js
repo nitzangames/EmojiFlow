@@ -11,7 +11,7 @@ var GameScene = new Phaser.Class({
     this.cubeSprites = [];
     this.waitSlotCards = [];
     this.columnCards = [];
-    this.orbitActive = false;
+    this.orbitCount = 0;
   },
 
   preload: function() {
@@ -105,7 +105,9 @@ var GameScene = new Phaser.Class({
       card.setStrokeStyle(3, 0x333355);
       card.setInteractive();
       card.setData('slotIndex', i);
-      card.on('pointerdown', this.onWaitSlotTap, this);
+      (function(scene, idx) {
+        card.on('pointerdown', function() { scene.onWaitSlotTap(idx); });
+      })(this, i);
 
       var label = this.add.text(sx + slotW / 2, slotY + slotH / 2, '', {
         fontSize: '28px', fontFamily: 'Arial', color: '#ffffff', fontStyle: 'bold',
@@ -162,7 +164,9 @@ var GameScene = new Phaser.Class({
         bg.setData('colIndex', c);
         bg.setData('stackIndex', s);
         if (s === 0) {
-          bg.on('pointerdown', this.onColumnTap, this);
+          (function(scene, colIdx) {
+            bg.on('pointerdown', function() { scene.onColumnTap(colIdx); });
+          })(this, c);
         }
 
         var label = this.add.text(cx + colW / 2, cy + cardH / 2, '', {
@@ -207,18 +211,14 @@ var GameScene = new Phaser.Class({
     }
   },
 
-  onColumnTap: function(pointer) {
-    if (this.orbitActive) return;
-    var ci = pointer.gameObject.getData('colIndex');
-    var result = launchFromColumn(this.state, ci);
+  onColumnTap: function(colIndex) {
+    var result = launchFromColumn(this.state, colIndex);
     if (!result) return;
     this.runOrbit(result.shooter, result.hits);
   },
 
-  onWaitSlotTap: function(pointer) {
-    if (this.orbitActive) return;
-    var si = pointer.gameObject.getData('slotIndex');
-    var result = launchFromWaitSlot(this.state, si);
+  onWaitSlotTap: function(slotIndex) {
+    var result = launchFromWaitSlot(this.state, slotIndex);
     if (!result) return;
     this.runOrbit(result.shooter, result.hits);
   },
@@ -255,7 +255,7 @@ var GameScene = new Phaser.Class({
   },
 
   runOrbit: function(shooter, hits) {
-    this.orbitActive = true;
+    this.orbitCount++;
     this.updateColumns();
     this.updateWaitSlots();
 
@@ -303,8 +303,8 @@ var GameScene = new Phaser.Class({
         var result = applyOrbit(scene.state, hits, shooter);
         shooterSprite.destroy();
         ammoLabel.destroy();
+        scene.orbitCount--;
         checkWinLose(scene.state);
-        scene.orbitActive = false;
         scene.updateBoard();
         scene.updateWaitSlots();
         scene.updateColumns();
