@@ -204,11 +204,236 @@ var GameScene = new Phaser.Class({
     }
   },
 
-  onColumnTap: function(pointer, localX, localY, event) {
-    // Will be implemented in Task 8
+  onColumnTap: function(pointer) {
+    if (this.orbitActive) return;
+    var ci = pointer.gameObject.getData('colIndex');
+    var result = launchFromColumn(this.state, ci);
+    if (!result) return;
+    this.runOrbit(result.shooter, result.hits);
   },
 
-  onWaitSlotTap: function(pointer, localX, localY, event) {
-    // Will be implemented in Task 8
+  onWaitSlotTap: function(pointer) {
+    if (this.orbitActive) return;
+    var si = pointer.gameObject.getData('slotIndex');
+    var result = launchFromWaitSlot(this.state, si);
+    if (!result) return;
+    this.runOrbit(result.shooter, result.hits);
+  },
+
+  getOrbitPosition: function(edge, pos) {
+    var margin = 30;
+    var bx = this.boardX;
+    var by = this.boardY;
+    var bw = GRID_SIZE * this.cellSize;
+    var bh = GRID_SIZE * this.cellSize;
+    var step = this.cellSize;
+
+    switch (edge) {
+      case 0: return { x: bx + pos * step + step / 2, y: by + bh + margin };
+      case 1: return { x: bx + bw + margin, y: by + bh - pos * step - step / 2 };
+      case 2: return { x: bx + bw - pos * step - step / 2, y: by - margin };
+      case 3: return { x: bx - margin, y: by + pos * step + step / 2 };
+    }
+  },
+
+  getOrbitCorner: function(cornerIndex) {
+    var margin = 30;
+    var bx = this.boardX;
+    var by = this.boardY;
+    var bw = GRID_SIZE * this.cellSize;
+    var bh = GRID_SIZE * this.cellSize;
+
+    switch (cornerIndex) {
+      case 0: return { x: bx - margin, y: by + bh + margin };
+      case 1: return { x: bx + bw + margin, y: by + bh + margin };
+      case 2: return { x: bx + bw + margin, y: by - margin };
+      case 3: return { x: bx - margin, y: by - margin };
+    }
+  },
+
+  runOrbit: function(shooter, hits) {
+    this.orbitActive = true;
+    this.updateColumns();
+    this.updateWaitSlots();
+
+    var color = this.state.palette[shooter.colorIndex];
+    var colorInt = Phaser.Display.Color.HexStringToColor(color.hex).color;
+
+    var startPos = this.getOrbitCorner(0);
+    var shooterSprite = this.add.circle(startPos.x, startPos.y, 20, colorInt);
+    shooterSprite.setStrokeStyle(3, 0xffffff);
+    shooterSprite.setDepth(10);
+
+    var ammoLabel = this.add.text(startPos.x, startPos.y, shooter.ammo.toString(), {
+      fontSize: '20px', fontFamily: 'Arial', color: '#ffffff', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(11);
+
+    var path = [];
+    var scene = this;
+
+    for (var edge = 0; edge < 4; edge++) {
+      path.push({ pos: this.getOrbitCorner(edge), hits: [] });
+
+      var edgeHits = hits.filter(function(h) { return h.edge === edge; });
+
+      for (var p = 0; p < GRID_SIZE; p++) {
+        var wp = this.getOrbitPosition(edge, p);
+        var hitHere = null;
+        for (var eh = 0; eh < edgeHits.length; eh++) {
+          if (edgeHits[eh].pos === p) {
+            hitHere = edgeHits[eh];
+            break;
+          }
+        }
+        path.push({ pos: wp, hit: hitHere });
+      }
+    }
+    path.push({ pos: this.getOrbitCorner(0), hits: [] });
+
+    var clearedDuringAnim = {};
+    var stepIndex = 0;
+    var moveSpeed = 30;
+    var animAmmo = shooter.ammo;
+
+    var doStep = function() {
+      if (stepIndex >= path.length) {
+        var result = applyOrbit(scene.state, hits, shooter);
+        shooterSprite.destroy();
+        ammoLabel.destroy();
+        checkWinLose(scene.state);
+        scene.orbitActive = false;
+        scene.updateBoard();
+        scene.updateWaitSlots();
+        scene.updateColumns();
+        scene.checkEndState();
+        return;
+      }
+
+      var wp = path[stepIndex];
+      stepIndex++;
+
+      scene.tweens.add({
+        targets: [shooterSprite, ammoLabel],
+        x: wp.pos.x,
+        y: wp.pos.y,
+        duration: moveSpeed,
+        ease: 'Linear',
+        onComplete: function() {
+          if (wp.hit && animAmmo > 0) {
+            var cellKey = wp.hit.row + ',' + wp.hit.col;
+            var cellIdx = wp.hit.row * GRID_SIZE + wp.hit.col;
+            if (scene.state.board[cellIdx] === shooter.colorIndex && !clearedDuringAnim[cellKey]) {
+              scene.clearCube(wp.hit.row, wp.hit.col);
+              clearedDuringAnim[cellKey] = true;
+              animAmmo--;
+              ammoLabel.setText(animAmmo.toString());
+            }
+          }
+          doStep();
+        },
+      });
+    };
+
+    doStep();
+  },
+
+  clearCube: function(row, col) {
+    var sprite = this.cubeSprites[row][col];
+    if (!sprite) return;
+    this.tweens.add({
+      targets: sprite,
+      scaleX: 0,
+      scaleY: 0,
+      alpha: 0,
+      duration: 200,
+      ease: 'Back.easeIn',
+      onComplete: function() {
+        sprite.destroy();
+      },
+    });
+    this.cubeSprites[row][col] = null;
+  },
+
+  updateBoard: function() {
+    for (var row = 0; row < GRID_SIZE; row++) {
+      for (var col = 0; col < GRID_SIZE; col++) {
+        var ci = this.state.board[row * GRID_SIZE + col];
+        var sprite = this.cubeSprites[row][col];
+        if (ci === 255 && sprite) {
+          sprite.destroy();
+          this.cubeSprites[row][col] = null;
+        }
+      }
+    }
+  },
+
+  checkEndState: function() {
+    if (this.state.status === 'won') {
+      this.showWinScreen();
+    } else if (this.state.status === 'lost') {
+      this.showLoseScreen();
+    }
+  },
+
+  showWinScreen: function() {
+    var stars = calcStars(this.state);
+
+    var currentLevel = parseInt(localStorage.getItem('emoji-flow:currentLevel') || '1');
+    if (this.state.levelNumber >= currentLevel) {
+      localStorage.setItem('emoji-flow:currentLevel', (this.state.levelNumber + 1).toString());
+    }
+    var allStars = JSON.parse(localStorage.getItem('emoji-flow:stars') || '{}');
+    var prev = allStars[this.state.levelNumber] || 0;
+    if (stars > prev) {
+      allStars[this.state.levelNumber] = stars;
+      localStorage.setItem('emoji-flow:stars', JSON.stringify(allStars));
+    }
+
+    var overlay = this.add.rectangle(540, 960, 1080, 1920, 0x000000, 0.7).setDepth(20);
+
+    var starText = '';
+    for (var i = 0; i < 3; i++) {
+      starText += (i < stars) ? '★' : '☆';
+    }
+    this.add.text(540, 800, starText, {
+      fontSize: '120px', fontFamily: 'Arial', color: '#f9a825',
+    }).setOrigin(0.5).setDepth(21);
+
+    this.add.text(540, 920, 'Level Complete!', {
+      fontSize: '64px', fontFamily: 'Arial', color: '#ffffff', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(21);
+
+    var nextBtn = this.add.rectangle(540, 1080, 400, 100, 0x4fc3f7).setDepth(21);
+    nextBtn.setInteractive();
+    this.add.text(540, 1080, 'Next Level', {
+      fontSize: '42px', fontFamily: 'Arial', color: '#000000', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(22);
+
+    var scene = this;
+    nextBtn.on('pointerdown', function() {
+      var next = scene.state.levelNumber + 1;
+      if (next > LEVELS.length) next = 1;
+      scene.registry.set('levelNumber', next);
+      scene.scene.restart();
+    });
+  },
+
+  showLoseScreen: function() {
+    var overlay = this.add.rectangle(540, 960, 1080, 1920, 0x000000, 0.7).setDepth(20);
+
+    this.add.text(540, 880, 'Out of Ammo!', {
+      fontSize: '64px', fontFamily: 'Arial', color: '#ff5555', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(21);
+
+    var retryBtn = this.add.rectangle(540, 1040, 400, 100, 0xc62828).setDepth(21);
+    retryBtn.setInteractive();
+    this.add.text(540, 1040, 'Try Again', {
+      fontSize: '42px', fontFamily: 'Arial', color: '#ffffff', fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(22);
+
+    var scene = this;
+    retryBtn.on('pointerdown', function() {
+      scene.scene.restart();
+    });
   },
 });
