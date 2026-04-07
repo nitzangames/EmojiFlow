@@ -131,6 +131,7 @@ var GameScene = new Phaser.Class({
         var colorInt = Phaser.Display.Color.HexStringToColor(color.hex).color;
         card.bg.setStrokeStyle(3, colorInt);
         card.label.setText('×' + shooter.ammo);
+        card.label.setColor(color.hex);
         card.bg.setFillStyle(0x1a1a2e);
       } else {
         card.bg.setStrokeStyle(3, 0x333355);
@@ -189,9 +190,11 @@ var GameScene = new Phaser.Class({
           card.bg.setFillStyle(0x1a1a2e);
           if (s === 0) {
             card.label.setText('×' + shooter.ammo);
+            card.label.setColor(color.hex);
             card.bg.setAlpha(1);
           } else {
             card.label.setText('?');
+            card.label.setColor('#888888');
             card.bg.setAlpha(0.5);
           }
         } else {
@@ -327,6 +330,9 @@ var GameScene = new Phaser.Class({
               clearedDuringAnim[cellKey] = true;
               animAmmo--;
               ammoLabel.setText(animAmmo.toString());
+              // Brief pause on hit for visual feedback
+              scene.time.delayedCall(80, doStep);
+              return;
             }
           }
           doStep();
@@ -340,6 +346,18 @@ var GameScene = new Phaser.Class({
   clearCube: function(row, col) {
     var sprite = this.cubeSprites[row][col];
     if (!sprite) return;
+
+    // White flash
+    var flash = this.add.rectangle(sprite.x, sprite.y, this.cellSize, this.cellSize, 0xffffff);
+    flash.setDepth(5);
+    this.tweens.add({
+      targets: flash,
+      alpha: 0,
+      duration: 150,
+      onComplete: function() { flash.destroy(); },
+    });
+
+    // Scale-out + fade (visual only — state mutated by applyOrbit)
     this.tweens.add({
       targets: sprite,
       scaleX: 0,
