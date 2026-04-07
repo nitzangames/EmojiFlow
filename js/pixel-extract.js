@@ -79,7 +79,7 @@ function quantizeColors(pixels, threshold) {
   return { palette: palette, assignments: assignments };
 }
 
-function extractBoard(scene, textureKey, quantizeThreshold) {
+function extractBoard(image, quantizeThreshold) {
   var srcSize = 72;
   var dstSize = GRID_SIZE;
 
@@ -88,9 +88,7 @@ function extractBoard(scene, textureKey, quantizeThreshold) {
   canvas.height = srcSize;
   var ctx = canvas.getContext('2d');
 
-  var texture = scene.textures.get(textureKey);
-  var source = texture.getSourceImage();
-  ctx.drawImage(source, 0, 0, srcSize, srcSize);
+  ctx.drawImage(image, 0, 0, srcSize, srcSize);
 
   var imageData = ctx.getImageData(0, 0, srcSize, srcSize);
   var downsampled = downsample(imageData, srcSize, dstSize);
