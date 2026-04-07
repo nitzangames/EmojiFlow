@@ -1,4 +1,4 @@
-const config = {
+var config = {
   type: Phaser.AUTO,
   width: 1080,
   height: 1920,
@@ -7,7 +7,8 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [],
+  scene: [GameScene],
 };
 
-const game = new Phaser.Game(config);
+var game = new Phaser.Game(config);
+game.registry.set('levelNumber', 1);
