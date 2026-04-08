@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v40';
+  var VERSION = 'v48';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
@@ -51,9 +51,13 @@
     var gy = (e.clientY - rect.top) * (1920 / rect.height);
 
     if (gameState === 'title') {
-      if (titleBtnRect && hitTest(gx, gy, titleBtnRect)) {
+      if (titleBtnRect && titleBtnRect.play && hitTest(gx, gy, titleBtnRect.play)) {
         var current = parseInt(localStorage.getItem('emoji-flow:currentLevel') || '1');
         loadLevel(current);
+      }
+      if (titleBtnRect && titleBtnRect.reset && hitTest(gx, gy, titleBtnRect.reset)) {
+        localStorage.removeItem('emoji-flow:currentLevel');
+        localStorage.removeItem('emoji-flow:stars');
       }
       return;
     }
@@ -139,11 +143,16 @@
       moving: false,
     };
 
-    // Build path
-    for (var edge = 0; edge < 4; edge++) {
-      var corner = getOrbitCorner(edge);
-      runner.path.push({ pos: corner, hit: null });
+    runner.path = buildOrbitPath(hits);
 
+    orbitRunners.push(runner);
+    advanceOrbit(runner);
+  }
+
+  function buildOrbitPath(hits) {
+    var path = [];
+    for (var edge = 0; edge < 4; edge++) {
+      path.push({ pos: getOrbitCorner(edge), hit: null });
       var edgeHits = hits.filter(function(h) { return h.edge === edge; });
       for (var p = 0; p < GRID_SIZE; p++) {
         var wp = getOrbitPosition(edge, p);
@@ -151,19 +160,40 @@
         for (var eh = 0; eh < edgeHits.length; eh++) {
           if (edgeHits[eh].pos === p) { hitHere = edgeHits[eh]; break; }
         }
-        runner.path.push({ pos: wp, hit: hitHere });
+        path.push({ pos: wp, hit: hitHere });
       }
     }
-    runner.path.push({ pos: getOrbitCorner(0), hit: null });
-
-    orbitRunners.push(runner);
-    advanceOrbit(runner);
+    path.push({ pos: getOrbitCorner(0), hit: null });
+    return path;
   }
 
   function advanceOrbit(runner) {
     if (runner.stepIndex >= runner.path.length) {
-      // Orbit complete
-      applyOrbit(state, runner.hits, runner.shooter);
+      // Orbit complete — check if we need another pass
+      if (runner.shooter.ammo > 0) {
+        var newHits = computeOrbit(state.board, runner.shooter.colorIndex);
+        if (newHits.length > 0) {
+          // Do another orbit pass — no state changes, just rebuild path
+          runner.hits = newHits;
+          runner.path = buildOrbitPath(newHits);
+          runner.stepIndex = 0;
+          runner.clearedDuringAnim = {};
+          advanceOrbit(runner);
+          return;
+        }
+        // Has ammo but nothing reachable — park in wait slot
+        var placed = false;
+        for (var s = 0; s < NUM_WAIT_SLOTS; s++) {
+          if (state.waitSlots[s] === null) {
+            state.waitSlots[s] = runner.shooter;
+            placed = true;
+            break;
+          }
+        }
+      }
+
+      // Remove from orbit
+      state.orbitingCount--;
       var idx = orbitRunners.indexOf(runner);
       if (idx >= 0) orbitRunners.splice(idx, 1);
       checkWinLose(state);
@@ -187,6 +217,7 @@
           var blockColor = state.palette[state.board[cellIdx]].hex;
           runner.clearedDuringAnim[cellKey] = true;
           runner.ammo--;
+          runner.shooter.ammo--;
 
           var bullet = { x: runner.x, y: runner.y, colorHex: runner.colorHex };
           bullets.push(bullet);

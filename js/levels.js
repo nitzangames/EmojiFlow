@@ -1,63 +1,65 @@
 var LEVELS = [
-  // Band 1: 2-3 colors (levels 1-10)
-  { emoji: '1f534', name: 'Red Circle', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '1f7e0', name: 'Orange Circle', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '1f7e1', name: 'Yellow Circle', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '1f7e2', name: 'Green Circle', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '1f535', name: 'Blue Circle', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '1f7e3', name: 'Purple Circle', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '2b50', name: 'Star', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '2764-fe0f', name: 'Red Heart', ammoBuffer: 0.25, quantizeThreshold: 40 },
-  { emoji: '1f49b', name: 'Yellow Heart', ammoBuffer: 0.20, quantizeThreshold: 35 },
-  { emoji: '1f499', name: 'Blue Heart', ammoBuffer: 0.20, quantizeThreshold: 35 },
+  // Levels 1-5: 4 colors (easy → medium, wave pattern)
+  { emoji: '1f3db', name: 'Classical Building', ammoBuffer: 0, quantizeThreshold: 30 },  // spread 170 - very distinct
+  { emoji: '1f526', name: 'Flashlight', ammoBuffer: 0, quantizeThreshold: 30 },          // spread 118
+  { emoji: '1f48a', name: 'Pill', ammoBuffer: 0, quantizeThreshold: 30 },                // spread 115
+  { emoji: '1f3ba', name: 'Trumpet', ammoBuffer: 0, quantizeThreshold: 30 },             // spread 115 - relief
+  { emoji: '1f41b', name: 'Bug', ammoBuffer: 0, quantizeThreshold: 30 },                 // spread 107
 
-  // Band 2: 3-4 colors (levels 11-20)
-  { emoji: '1f34e', name: 'Red Apple', ammoBuffer: 0.20, quantizeThreshold: 35 },
-  { emoji: '1f34a', name: 'Tangerine', ammoBuffer: 0.20, quantizeThreshold: 35 },
-  { emoji: '1f33b', name: 'Sunflower', ammoBuffer: 0.20, quantizeThreshold: 35 },
-  { emoji: '1f525', name: 'Fire', ammoBuffer: 0.15, quantizeThreshold: 30 },
-  { emoji: '1f4a7', name: 'Droplet', ammoBuffer: 0.15, quantizeThreshold: 30 },
-  { emoji: '1f31f', name: 'Glowing Star', ammoBuffer: 0.15, quantizeThreshold: 30 },
-  { emoji: '1f33a', name: 'Hibiscus', ammoBuffer: 0.15, quantizeThreshold: 30 },
-  { emoji: '1f352', name: 'Cherries', ammoBuffer: 0.15, quantizeThreshold: 30 },
-  { emoji: '1f353', name: 'Strawberry', ammoBuffer: 0.10, quantizeThreshold: 25 },
-  { emoji: '1f438', name: 'Frog', ammoBuffer: 0.10, quantizeThreshold: 25 },
+  // Levels 6-10: 5 colors (medium, wave pattern)
+  { emoji: '1f4a3', name: 'Bomb', ammoBuffer: 0, quantizeThreshold: 30 },                // spread 148 - easy start
+  { emoji: '23f3', name: 'Hourglass', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 133
+  { emoji: '1f43d', name: 'Pig Nose', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 124
+  { emoji: '1f352', name: 'Cherries', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 106 - harder
+  { emoji: '1f329', name: 'Lightning', ammoBuffer: 0, quantizeThreshold: 30 },           // spread 146 - relief
 
-  // Band 3: 4-5 colors (levels 21-30)
-  { emoji: '1f345', name: 'Tomato', ammoBuffer: 0.10, quantizeThreshold: 25 },
-  { emoji: '1f34b', name: 'Lemon', ammoBuffer: 0.10, quantizeThreshold: 25 },
-  { emoji: '1f34c', name: 'Banana', ammoBuffer: 0.10, quantizeThreshold: 25 },
-  { emoji: '1f347', name: 'Grapes', ammoBuffer: 0.10, quantizeThreshold: 25 },
-  { emoji: '1f349', name: 'Watermelon', ammoBuffer: 0.10, quantizeThreshold: 22 },
-  { emoji: '1f350', name: 'Pear', ammoBuffer: 0.10, quantizeThreshold: 22 },
-  { emoji: '1f351', name: 'Peach', ammoBuffer: 0.10, quantizeThreshold: 22 },
-  { emoji: '1f33d', name: 'Corn', ammoBuffer: 0.08, quantizeThreshold: 22 },
-  { emoji: '1f955', name: 'Carrot', ammoBuffer: 0.08, quantizeThreshold: 22 },
-  { emoji: '1f966', name: 'Broccoli', ammoBuffer: 0.08, quantizeThreshold: 22 },
+  // Levels 11-20: 6 colors (medium-hard, wave)
+  { emoji: '1f4b6', name: 'Banknote', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 155 - easy start
+  { emoji: '1f3c8', name: 'Football', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 141
+  { emoji: '1f9af', name: 'Guide Dog', ammoBuffer: 0, quantizeThreshold: 30 },           // spread 145 - relief
+  { emoji: '1f480', name: 'Skull', ammoBuffer: 0, quantizeThreshold: 30 },               // spread 140
+  { emoji: '1f573', name: 'Hole', ammoBuffer: 0, quantizeThreshold: 30 },                // spread 134
+  { emoji: '1f6d2', name: 'Shopping Cart', ammoBuffer: 0, quantizeThreshold: 30 },       // spread 132
+  { emoji: '1f31d', name: 'Sun With Face', ammoBuffer: 0, quantizeThreshold: 30 },       // spread 129
+  { emoji: '1f9e6', name: 'Socks', ammoBuffer: 0, quantizeThreshold: 30 },               // spread 145 - relief
+  { emoji: '1f4db', name: 'Name Badge', ammoBuffer: 0, quantizeThreshold: 30 },          // spread 141
+  { emoji: '1f642', name: 'Smiley', ammoBuffer: 0, quantizeThreshold: 30 },              // spread 104
 
-  // Band 4: 5-6 colors (levels 31-40)
-  { emoji: '1f338', name: 'Cherry Blossom', ammoBuffer: 0.08, quantizeThreshold: 20 },
-  { emoji: '1f40c', name: 'Snail', ammoBuffer: 0.08, quantizeThreshold: 20 },
-  { emoji: '1f41b', name: 'Bug', ammoBuffer: 0.08, quantizeThreshold: 20 },
-  { emoji: '1f42c', name: 'Dolphin', ammoBuffer: 0.08, quantizeThreshold: 20 },
-  { emoji: '1f431', name: 'Cat Face', ammoBuffer: 0.05, quantizeThreshold: 18 },
-  { emoji: '1f435', name: 'Monkey Face', ammoBuffer: 0.05, quantizeThreshold: 18 },
-  { emoji: '1f436', name: 'Dog Face', ammoBuffer: 0.05, quantizeThreshold: 18 },
-  { emoji: '1f98a', name: 'Fox', ammoBuffer: 0.05, quantizeThreshold: 18 },
-  { emoji: '1f98e', name: 'Lizard', ammoBuffer: 0.05, quantizeThreshold: 18 },
-  { emoji: '1f984', name: 'Unicorn', ammoBuffer: 0.05, quantizeThreshold: 18 },
+  // Levels 21-30: 7 colors (hard, wave)
+  { emoji: '1f305', name: 'Sunrise', ammoBuffer: 0, quantizeThreshold: 30 },             // spread 158 - easy start
+  { emoji: '1f359', name: 'Rice Ball', ammoBuffer: 0, quantizeThreshold: 30 },           // spread 155
+  { emoji: '1f988', name: 'Squid', ammoBuffer: 0, quantizeThreshold: 30 },               // spread 144
+  { emoji: '1f3b1', name: 'Pool Ball', ammoBuffer: 0, quantizeThreshold: 30 },           // spread 142
+  { emoji: '1f516', name: 'Bookmark', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 141
+  { emoji: '1f34d', name: 'Pineapple', ammoBuffer: 0, quantizeThreshold: 30 },           // relief (familiar)
+  { emoji: '1f344', name: 'Mushroom', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 104
+  { emoji: '1f32d', name: 'Hotdog', ammoBuffer: 0, quantizeThreshold: 30 },              // spread 84
+  { emoji: '1f968', name: 'Pretzel', ammoBuffer: 0, quantizeThreshold: 30 },             // spread 92 - relief
+  { emoji: '1f94e', name: 'Softball', ammoBuffer: 0, quantizeThreshold: 30 },            // spread 75
 
-  // Band 5: 6+ colors (levels 41-50)
-  { emoji: '1f340', name: 'Four Leaf Clover', ammoBuffer: 0.05, quantizeThreshold: 16 },
-  { emoji: '1f332', name: 'Evergreen Tree', ammoBuffer: 0.05, quantizeThreshold: 16 },
-  { emoji: '1f383', name: 'Jack-O-Lantern', ammoBuffer: 0.05, quantizeThreshold: 16 },
-  { emoji: '1f384', name: 'Christmas Tree', ammoBuffer: 0.05, quantizeThreshold: 15 },
-  { emoji: '1f30b', name: 'Volcano', ammoBuffer: 0.05, quantizeThreshold: 15 },
-  { emoji: '1f3a8', name: 'Artist Palette', ammoBuffer: 0.05, quantizeThreshold: 15 },
-  { emoji: '1f30d', name: 'Globe', ammoBuffer: 0.03, quantizeThreshold: 14 },
-  { emoji: '1f308', name: 'Rainbow', ammoBuffer: 0.03, quantizeThreshold: 14 },
-  { emoji: '1f386', name: 'Fireworks', ammoBuffer: 0.03, quantizeThreshold: 14 },
-  { emoji: '1f3d4', name: 'Snow Mountain', ammoBuffer: 0.03, quantizeThreshold: 14 },
+  // Levels 31-40: 8 colors (very hard, wave)
+  { emoji: '1fa84', name: 'Magic Wand', ammoBuffer: 0, quantizeThreshold: 30 },          // spread 156 - easy start
+  { emoji: '1f94a', name: 'Boxing Glove', ammoBuffer: 0, quantizeThreshold: 30 },        // spread 149
+  { emoji: '1f432', name: 'Dragon Face', ammoBuffer: 0, quantizeThreshold: 30 },         // spread 142
+  { emoji: '1f3d9', name: 'Cityscape', ammoBuffer: 0, quantizeThreshold: 30 },           // spread 142
+  { emoji: '1f47b', name: 'Ghost', ammoBuffer: 0, quantizeThreshold: 30 },               // spread 141 - relief
+  { emoji: '1f3e8', name: 'Hotel', ammoBuffer: 0, quantizeThreshold: 30 },               // spread 141
+  { emoji: '1f440', name: 'Eyes', ammoBuffer: 0, quantizeThreshold: 30 },                // spread 140
+  { emoji: '1f438', name: 'Frog', ammoBuffer: 0, quantizeThreshold: 30 },                // spread 132 - relief
+  { emoji: '1f419', name: 'Octopus', ammoBuffer: 0, quantizeThreshold: 30 },             // medium
+  { emoji: '1f402', name: 'Ox', ammoBuffer: 0, quantizeThreshold: 30 },                  // spread 89
+
+  // Levels 41-50: mixed 6-8 colors (expert, tighter colors)
+  { emoji: '1f98b', name: 'Butterfly', ammoBuffer: 0, quantizeThreshold: 30 },           // 6 colors, spread 98
+  { emoji: '1f9a6', name: 'Otter', ammoBuffer: 0, quantizeThreshold: 30 },               // 6 colors, spread 93
+  { emoji: '1f9c0', name: 'Cheese', ammoBuffer: 0, quantizeThreshold: 30 },              // 7 colors, spread 75
+  { emoji: '1f30a', name: 'Ocean Wave', ammoBuffer: 0, quantizeThreshold: 30 },          // 4 colors but tight
+  { emoji: '1f333', name: 'Deciduous Tree', ammoBuffer: 0, quantizeThreshold: 30 },      // greens
+  { emoji: '1f348', name: 'Melon', ammoBuffer: 0, quantizeThreshold: 30 },               // greens
+  { emoji: '1f316', name: 'Waning Moon', ammoBuffer: 0, quantizeThreshold: 30 },         // 7 colors, spread 92
+  { emoji: '1f330', name: 'Chestnut', ammoBuffer: 0, quantizeThreshold: 30 },            // browns
+  { emoji: '1f525', name: 'Fire', ammoBuffer: 0, quantizeThreshold: 30 },                // reds/oranges
+  { emoji: '1f30b', name: 'Volcano', ammoBuffer: 0, quantizeThreshold: 25 },             // final boss
 ];
 
 var GRID_SIZE = 18;

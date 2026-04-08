@@ -10,12 +10,12 @@ function createGameState(board, palette, levelNumber, levelDef) {
     }
   }
 
-  // Generate shooters: one per color, ammo = cubeCount + buffer
+  // Generate shooters: one per color, ammo = exact cube count
   var shooters = [];
   var totalAmmo = 0;
   for (var c = 0; c < palette.length; c++) {
     if (cubeCounts[c] === 0) continue;
-    var ammo = Math.ceil(cubeCounts[c] * (1 + levelDef.ammoBuffer));
+    var ammo = cubeCounts[c];
     shooters.push({ colorIndex: c, ammo: ammo });
     totalAmmo += ammo;
   }
