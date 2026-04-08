@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v20';
+  var VERSION = 'v23';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js

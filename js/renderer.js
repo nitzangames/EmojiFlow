@@ -1,23 +1,23 @@
-// Layout constants (same as Phaser version)
-var CELL_SIZE = 40;
-var TRACK_MARGIN = 55;
-var TRACK_WIDTH = 52;
-var BOARD_X = (1080 - GRID_SIZE * CELL_SIZE) / 2; // 180
-var BOARD_Y = 200;
-var BOARD_PX = GRID_SIZE * CELL_SIZE; // 720
+// Layout constants — board fills nearly full width
+var CELL_SIZE = 44;
+var TRACK_MARGIN = 45;
+var TRACK_WIDTH = 42;
+var BOARD_PX = GRID_SIZE * CELL_SIZE; // 792
+var BOARD_X = (1080 - BOARD_PX) / 2;  // 144
+var BOARD_Y = 140;
 
 // Wait slot layout
-var WAIT_SLOT_W = 140;
-var WAIT_SLOT_H = 100;
-var WAIT_SLOT_RADIUS = 14;
-var WAIT_SLOT_GAP = 12;
+var WAIT_SLOT_W = 130;
+var WAIT_SLOT_H = 80;
+var WAIT_SLOT_RADIUS = 12;
+var WAIT_SLOT_GAP = 8;
 
 // Column layout
-var COL_W = 180;
-var COL_CARD_H = 110;
-var COL_GAP = 8;
-var COL_RADIUS = 16;
-var COL_COL_GAP = 12;
+var COL_W = 190;
+var COL_CARD_H = 95;
+var COL_GAP = 6;
+var COL_RADIUS = 14;
+var COL_COL_GAP = 10;
 
 function hexToRgb(hex) {
   hex = hex.replace('#', '');
@@ -323,7 +323,7 @@ function drawDashedRoundedRect(ctx, x, y, w, h, r, color, dashLen, gapLen) {
 // --- Wait Slots ---
 
 function getWaitSlotY() {
-  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 30;
+  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 15;
 }
 
 function drawWaitSlots(ctx, state, hitRects) {
@@ -349,7 +349,7 @@ function drawWaitSlots(ctx, state, hitRects) {
       ctx.roundRect(sx, slotY, WAIT_SLOT_W, WAIT_SLOT_H, WAIT_SLOT_RADIUS);
       ctx.fill();
       ctx.strokeStyle = color.hex;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.stroke();
 
       // Gradient swatch
@@ -399,7 +399,7 @@ function drawWaitSlots(ctx, state, hitRects) {
 // --- Columns ---
 
 function getColumnsY() {
-  return getWaitSlotY() + WAIT_SLOT_H + 50;
+  return getWaitSlotY() + WAIT_SLOT_H + 30;
 }
 
 function drawColumns(ctx, state, hitRects) {
@@ -436,7 +436,7 @@ function drawColumns(ctx, state, hitRects) {
         ctx.fill();
         ctx.restore();
         ctx.strokeStyle = color.hex;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.roundRect(cx, cy, COL_W, COL_CARD_H, COL_RADIUS);
         ctx.stroke();
