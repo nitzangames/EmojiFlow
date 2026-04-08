@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v38';
+  var VERSION = 'v39';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
@@ -214,8 +214,8 @@
             });
           })(bullet, wp.hit.row, wp.hit.col, blockColor, cellIdx);
 
-          // Pause then continue orbit
-          setTimeout(function() { advanceOrbit(runner); }, 100);
+          // Continue moving immediately — no pause
+          advanceOrbit(runner);
           return;
         }
       }
