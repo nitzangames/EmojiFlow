@@ -1,22 +1,22 @@
 // Layout constants — board fills nearly full width
 var CELL_SIZE = 44;
-var TRACK_MARGIN = 45;
-var TRACK_WIDTH = 42;
+var TRACK_MARGIN = 55;
+var TRACK_WIDTH = 76;
 var BOARD_PX = GRID_SIZE * CELL_SIZE; // 792
 var BOARD_X = (1080 - BOARD_PX) / 2;  // 144
-var BOARD_Y = 140;
+var BOARD_Y = 280;
 
 // Wait slot layout
-var WAIT_SLOT_W = 130;
-var WAIT_SLOT_H = 80;
-var WAIT_SLOT_RADIUS = 12;
-var WAIT_SLOT_GAP = 8;
+var WAIT_SLOT_W = 186;
+var WAIT_SLOT_H = 140;
+var WAIT_SLOT_RADIUS = 14;
+var WAIT_SLOT_GAP = 10;
 
 // Column layout
 var COL_W = 190;
-var COL_CARD_H = 95;
-var COL_GAP = 6;
-var COL_RADIUS = 14;
+var COL_CARD_H = 142;
+var COL_GAP = 12;
+var COL_RADIUS = 16;
 var COL_COL_GAP = 10;
 
 function hexToRgb(hex) {
@@ -110,7 +110,8 @@ function drawHUD(ctx, levelNum, levelDef, totalStars) {
   ctx.font = '24px Arial';
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
   ctx.letterSpacing = '4px';
-  ctx.fillText(levelDef.name.toUpperCase(), 540, 110);
+  var trackTop = BOARD_Y - TRACK_MARGIN - TRACK_WIDTH / 2 - 6;
+  ctx.fillText(levelDef.name.toUpperCase(), 540, (90 + trackTop) / 2);
   ctx.letterSpacing = '0px';
 }
 
@@ -124,7 +125,19 @@ function drawTrack(ctx) {
   var margin = TRACK_MARGIN;
   var tw = TRACK_WIDTH;
 
-  // Layer 1: Outer glow
+  // Layer 0: Bright outer border
+  var outerPad = margin + tw / 2 + 10;
+  ctx.save();
+  ctx.shadowColor = 'rgba(100,120,220,0.4)';
+  ctx.shadowBlur = 30;
+  ctx.strokeStyle = '#7080dd';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.roundRect(bx - outerPad, by - outerPad, bw + outerPad * 2, bh + outerPad * 2, outerPad);
+  ctx.stroke();
+  ctx.restore();
+
+  // Layer 1: Outer glow fill
   var glowPad = margin + tw / 2 + 6;
   ctx.fillStyle = 'rgba(96,112,204,0.6)';
   ctx.beginPath();
@@ -247,11 +260,15 @@ function drawBoard(ctx, state, clearingCells) {
 
       // Bottom shadow
       ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.fillRect(x + 1, y + 2, CELL_SIZE - 2, CELL_SIZE - 2);
+      ctx.beginPath();
+      ctx.roundRect(x + 1, y + 2, CELL_SIZE - 2, CELL_SIZE - 2, 4);
+      ctx.fill();
 
       // Cell
       ctx.fillStyle = color.hex;
-      ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+      ctx.beginPath();
+      ctx.roundRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2, 4);
+      ctx.fill();
     }
   }
 }
@@ -267,7 +284,9 @@ function drawClearingCells(ctx, state, clearingCells) {
     if (cell.flashAlpha > 0) {
       ctx.globalAlpha = cell.flashAlpha;
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(x - s / 2, y - s / 2, s, s);
+      ctx.beginPath();
+      ctx.roundRect(x - s / 2, y - s / 2, s, s, 4);
+      ctx.fill();
       ctx.globalAlpha = 1;
     }
 
@@ -278,7 +297,9 @@ function drawClearingCells(ctx, state, clearingCells) {
       ctx.translate(x, y);
       ctx.scale(cell.scale, cell.scale);
       ctx.fillStyle = cell.colorHex;
-      ctx.fillRect(-s / 2, -s / 2, s, s);
+      ctx.beginPath();
+      ctx.roundRect(-s / 2, -s / 2, s, s, 4);
+      ctx.fill();
       ctx.restore();
     }
   }
@@ -311,7 +332,7 @@ function drawGradientCircle(ctx, x, y, radius, hexColor) {
 function drawDashedRoundedRect(ctx, x, y, w, h, r, color, dashLen, gapLen) {
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
-  ctx.globalAlpha = 0.5;
+  ctx.globalAlpha = 0.8;
   ctx.setLineDash([dashLen, gapLen]);
   ctx.beginPath();
   ctx.roundRect(x, y, w, h, r);
@@ -323,7 +344,7 @@ function drawDashedRoundedRect(ctx, x, y, w, h, r, color, dashLen, gapLen) {
 // --- Wait Slots ---
 
 function getWaitSlotY() {
-  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 15;
+  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 30;
 }
 
 function drawWaitSlots(ctx, state, hitRects) {
@@ -353,37 +374,37 @@ function drawWaitSlots(ctx, state, hitRects) {
       ctx.stroke();
 
       // Gradient swatch
-      drawGradientCircle(ctx, centerX, centerY - 8, 20, color.hex);
+      drawGradientCircle(ctx, centerX, centerY - 20, 30, color.hex);
 
       // Ammo label
-      ctx.font = 'bold 24px Arial';
+      ctx.font = 'bold 32px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = color.hex;
-      ctx.fillText('\u00D7' + shooter.ammo, centerX, centerY + 28);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('\u00D7' + shooter.ammo, centerX, centerY + 44);
 
       // Hit rect
       hitRects.push({ x: sx, y: slotY, w: WAIT_SLOT_W, h: WAIT_SLOT_H, type: 'wait', index: i });
     } else {
-      // Empty slot
-      ctx.fillStyle = 'rgba(26,26,64,0.3)';
+      // Empty slot — brighter
+      ctx.fillStyle = 'rgba(30,30,70,0.5)';
       ctx.beginPath();
       ctx.roundRect(sx, slotY, WAIT_SLOT_W, WAIT_SLOT_H, WAIT_SLOT_RADIUS);
       ctx.fill();
-      drawDashedRoundedRect(ctx, sx, slotY, WAIT_SLOT_W, WAIT_SLOT_H, WAIT_SLOT_RADIUS, '#333355', 8, 6);
+      drawDashedRoundedRect(ctx, sx, slotY, WAIT_SLOT_W, WAIT_SLOT_H, WAIT_SLOT_RADIUS, '#555588', 8, 6);
 
       // Empty swatch circle
-      ctx.strokeStyle = '#333355';
+      ctx.strokeStyle = '#555588';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(centerX, centerY - 8, 20, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY - 20, 30, 0, Math.PI * 2);
       ctx.stroke();
 
       // Dash label
-      ctx.font = 'bold 24px Arial';
+      ctx.font = 'bold 32px Arial';
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#333355';
-      ctx.fillText('\u2014', centerX, centerY + 28);
+      ctx.fillStyle = '#555588';
+      ctx.fillText('\u2014', centerX, centerY + 44);
     }
   }
 
@@ -392,14 +413,14 @@ function drawWaitSlots(ctx, state, hitRects) {
   ctx.textAlign = 'center';
   ctx.fillStyle = '#4a4a7e';
   ctx.letterSpacing = '4px';
-  ctx.fillText('WAITING', 540, slotY + WAIT_SLOT_H + 10);
+  ctx.fillText('WAITING', 540, slotY + WAIT_SLOT_H + 25);
   ctx.letterSpacing = '0px';
 }
 
 // --- Columns ---
 
 function getColumnsY() {
-  return getWaitSlotY() + WAIT_SLOT_H + 30;
+  return getWaitSlotY() + WAIT_SLOT_H + 60;
 }
 
 function drawColumns(ctx, state, hitRects) {
@@ -441,13 +462,13 @@ function drawColumns(ctx, state, hitRects) {
         ctx.roundRect(cx, cy, COL_W, COL_CARD_H, COL_RADIUS);
         ctx.stroke();
 
-        drawGradientCircle(ctx, centerX, centerY - 16, 24, color.hex);
+        drawGradientCircle(ctx, centerX, centerY - 20, 30, color.hex);
 
-        ctx.font = 'bold 26px Arial';
+        ctx.font = 'bold 32px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText('\u00D7' + shooter.ammo, centerX, centerY + 32);
+        ctx.fillText('\u00D7' + shooter.ammo, centerX, centerY + 44);
 
         hitRects.push({ x: cx, y: cy, w: COL_W, h: COL_CARD_H, type: 'column', index: c });
 
@@ -463,14 +484,14 @@ function drawColumns(ctx, state, hitRects) {
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(centerX, centerY - 16, 24, 0, Math.PI * 2);
+        ctx.arc(centerX, centerY - 20, 30, 0, Math.PI * 2);
         ctx.fillStyle = color.hex;
         ctx.fill();
 
-        ctx.font = 'bold 26px Arial';
+        ctx.font = 'bold 32px Arial';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#888888';
-        ctx.fillText('?', centerX, centerY + 32);
+        ctx.fillText('?', centerX, centerY + 44);
         ctx.globalAlpha = 1;
 
       } else {
@@ -495,7 +516,7 @@ function drawColumns(ctx, state, hitRects) {
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(centerX, cy + clipH * 0.5, 24, 0, Math.PI * 2);
+        ctx.arc(centerX, cy + clipH * 0.5, 30, 0, Math.PI * 2);
         ctx.fillStyle = color.hex;
         ctx.fill();
         ctx.restore();
@@ -537,6 +558,38 @@ function drawOrbitShooter(ctx, x, y, colorHex, ammo) {
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#ffffff';
   ctx.fillText(ammo.toString(), x, y);
+}
+
+// --- Bullets ---
+
+function drawBullet(ctx, x, y, colorHex) {
+  var radius = 8;
+  ctx.save();
+  ctx.shadowColor = hexToRgba(colorHex, 0.8);
+  ctx.shadowBlur = 12;
+  var grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  grad.addColorStop(0, '#ffffff');
+  grad.addColorStop(0.4, lightenColor(colorHex, 60));
+  grad.addColorStop(1, colorHex);
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.restore();
+}
+
+// --- Particles ---
+
+function drawParticles(ctx, particles) {
+  for (var i = 0; i < particles.length; i++) {
+    var p = particles[i];
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.colorHex;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
 }
 
 // --- Overlays ---

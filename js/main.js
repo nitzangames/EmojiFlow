@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v23';
+  var VERSION = 'v38';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
@@ -16,6 +16,8 @@
   // Orbit animation state
   var orbitRunners = []; // active orbit animations
   var clearingCells = []; // cells being animated out
+  var bullets = [];      // bullets in flight
+  var particles = [];    // explosion particles
 
   var lastTime = 0;
 
@@ -30,6 +32,8 @@
       state = createGameState(extracted.board, extracted.palette, levelNum, levelDef);
       orbitRunners = [];
       clearingCells = [];
+      bullets = [];
+      particles = [];
       clearTweens();
       gameState = 'playing';
     };
@@ -177,22 +181,41 @@
         var cellKey = wp.hit.row + ',' + wp.hit.col;
         var cellIdx = wp.hit.row * GRID_SIZE + wp.hit.col;
         if (state.board[cellIdx] === runner.shooter.colorIndex && !runner.clearedDuringAnim[cellKey]) {
-          // Clear this cube with animation
-          var color = state.palette[state.board[cellIdx]];
-          clearingCells.push({
-            row: wp.hit.row,
-            col: wp.hit.col,
-            colorHex: color.hex,
-            scale: 1,
-            alpha: 1,
-            flashAlpha: 1,
-            elapsed: 0,
-          });
-          state.board[cellIdx] = 255;
+          // Fire a bullet toward the target cell
+          var targetX = BOARD_X + wp.hit.col * CELL_SIZE + CELL_SIZE / 2;
+          var targetY = BOARD_Y + wp.hit.row * CELL_SIZE + CELL_SIZE / 2;
+          var blockColor = state.palette[state.board[cellIdx]].hex;
           runner.clearedDuringAnim[cellKey] = true;
           runner.ammo--;
-          // Pause 80ms then continue
-          setTimeout(function() { advanceOrbit(runner); }, 80);
+
+          var bullet = { x: runner.x, y: runner.y, colorHex: runner.colorHex };
+          bullets.push(bullet);
+
+          // Calculate bullet travel distance for duration
+          var dx = targetX - runner.x;
+          var dy = targetY - runner.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var bulletSpeed = 120; // ms for full travel
+
+          (function(b, hitRow, hitCol, bColor, ci) {
+            tweenTo(b, { x: targetX, y: targetY }, bulletSpeed, 'linear', function() {
+              // Remove bullet
+              var bi = bullets.indexOf(b);
+              if (bi >= 0) bullets.splice(bi, 1);
+              // Clear the cell
+              state.board[hitRow * GRID_SIZE + hitCol] = 255;
+              // Spawn explosion particles
+              spawnParticles(targetX, targetY, bColor);
+              // Flash effect
+              clearingCells.push({
+                row: hitRow, col: hitCol, colorHex: bColor,
+                scale: 1, alpha: 0.5, flashAlpha: 1, elapsed: 0,
+              });
+            });
+          })(bullet, wp.hit.row, wp.hit.col, blockColor, cellIdx);
+
+          // Pause then continue orbit
+          setTimeout(function() { advanceOrbit(runner); }, 100);
           return;
         }
       }
@@ -221,6 +244,26 @@
     }
   }
 
+  // --- Particles ---
+  function spawnParticles(x, y, colorHex) {
+    var count = 12;
+    for (var i = 0; i < count; i++) {
+      var angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
+      var speed = 150 + Math.random() * 200;
+      particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        colorHex: colorHex,
+        alpha: 1,
+        size: 3 + Math.random() * 4,
+        life: 0,
+        maxLife: 300 + Math.random() * 200,
+      });
+    }
+  }
+
   // --- Update ---
   function update(dt) {
     updateTweens(dt);
@@ -236,6 +279,22 @@
       cell.alpha = 1 - t;
       if (cell.elapsed >= 200) {
         clearingCells.splice(i, 1);
+      }
+    }
+
+    // Update particles
+    var dtSec = dt / 1000;
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.life += dt;
+      p.x += p.vx * dtSec;
+      p.y += p.vy * dtSec;
+      p.vx *= 0.96;
+      p.vy *= 0.96;
+      p.alpha = Math.max(0, 1 - p.life / p.maxLife);
+      p.size *= 0.99;
+      if (p.life >= p.maxLife) {
+        particles.splice(i, 1);
       }
     }
   }
@@ -278,6 +337,16 @@
     for (var i = 0; i < orbitRunners.length; i++) {
       var runner = orbitRunners[i];
       drawOrbitShooter(ctx, runner.x, runner.y, runner.colorHex, runner.ammo);
+    }
+
+    // Draw bullets
+    for (var i = 0; i < bullets.length; i++) {
+      drawBullet(ctx, bullets[i].x, bullets[i].y, bullets[i].colorHex);
+    }
+
+    // Draw particles
+    if (particles.length > 0) {
+      drawParticles(ctx, particles);
     }
 
     // Overlay
