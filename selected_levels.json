@@ -1,0 +1,778 @@
+[
+  {
+    "level": 1,
+    "codepoint": "1f3db",
+    "name": "classical-building",
+    "colors": 4,
+    "avgDist": 169.9,
+    "palette": [
+      "#c3ced5",
+      "#9fafb5",
+      "#292f33",
+      "#e1e8ed"
+    ]
+  },
+  {
+    "level": 2,
+    "codepoint": "1f357",
+    "name": "poultry-leg",
+    "colors": 4,
+    "avgDist": 92.9,
+    "palette": [
+      "#fcd681",
+      "#ccbc74",
+      "#c26e53",
+      "#9e6b4e"
+    ]
+  },
+  {
+    "level": 3,
+    "codepoint": "1f6bf",
+    "name": "shower",
+    "colors": 4,
+    "avgDist": 72.2,
+    "palette": [
+      "#98a9b4",
+      "#7e8e98",
+      "#64757b",
+      "#52a1d0"
+    ]
+  },
+  {
+    "level": 4,
+    "codepoint": "1f408-200d-2b1b",
+    "name": "?",
+    "colors": 4,
+    "avgDist": 61.9,
+    "palette": [
+      "#323835",
+      "#656364",
+      "#41494b",
+      "#64737c"
+    ]
+  },
+  {
+    "level": 5,
+    "codepoint": "1f44c",
+    "name": "ok-hand",
+    "colors": 4,
+    "avgDist": 47.2,
+    "palette": [
+      "#fad85c",
+      "#f2a74b",
+      "#d6c259",
+      "#d39c4b"
+    ]
+  },
+  {
+    "level": 6,
+    "codepoint": "1f4bc",
+    "name": "briefcase",
+    "colors": 5,
+    "avgDist": 164.2,
+    "palette": [
+      "#9a4e1c",
+      "#c4c0bd",
+      "#ccd6dd",
+      "#823918",
+      "#672214"
+    ]
+  },
+  {
+    "level": 7,
+    "codepoint": "1f54e",
+    "name": "menorah",
+    "colors": 5,
+    "avgDist": 95.7,
+    "palette": [
+      "#9266cc",
+      "#ae8bd8",
+      "#ccb8e8",
+      "#e8def5",
+      "#fbf8fe"
+    ]
+  },
+  {
+    "level": 8,
+    "codepoint": "1f460",
+    "name": "high-heeled-shoe",
+    "colors": 5,
+    "avgDist": 88.1,
+    "palette": [
+      "#dc2e44",
+      "#c23945",
+      "#952e3d",
+      "#2d3235",
+      "#6c2f39"
+    ]
+  },
+  {
+    "level": 9,
+    "codepoint": "1f9fa",
+    "name": "basket",
+    "colors": 5,
+    "avgDist": 80.5,
+    "palette": [
+      "#a2664d",
+      "#bf6b50",
+      "#c08165",
+      "#732e20",
+      "#d6997e"
+    ]
+  },
+  {
+    "level": 10,
+    "codepoint": "1f4e3",
+    "name": "megaphone",
+    "colors": 5,
+    "avgDist": 60.1,
+    "palette": [
+      "#5198b6",
+      "#3a86bb",
+      "#266896",
+      "#50a1d5",
+      "#55acee"
+    ]
+  },
+  {
+    "level": 11,
+    "codepoint": "1f305",
+    "name": "sunrise",
+    "colors": 7,
+    "avgDist": 157.5,
+    "palette": [
+      "#ffcb4b",
+      "#f69c1b",
+      "#fbc573",
+      "#fdd896",
+      "#ffe7b5",
+      "#22679a",
+      "#347fb8"
+    ]
+  },
+  {
+    "level": 12,
+    "codepoint": "1f4d6",
+    "name": "open-book",
+    "colors": 7,
+    "avgDist": 123.1,
+    "palette": [
+      "#c9d4db",
+      "#dfe6eb",
+      "#b1c0c1",
+      "#97a9b3",
+      "#246796",
+      "#8699a6",
+      "#245376"
+    ]
+  },
+  {
+    "level": 13,
+    "codepoint": "1f6c5",
+    "name": "left-luggage",
+    "colors": 7,
+    "avgDist": 124.8,
+    "palette": [
+      "#226699",
+      "#3a77a5",
+      "#d6e3ec",
+      "#f4f7f9",
+      "#8aadc8",
+      "#a8c3d7",
+      "#6694b7"
+    ]
+  },
+  {
+    "level": 14,
+    "codepoint": "1f5d3",
+    "name": "spiral-calendar",
+    "colors": 8,
+    "avgDist": 154.6,
+    "palette": [
+      "#627177",
+      "#d53348",
+      "#945968",
+      "#a83243",
+      "#d58291",
+      "#d1dae1",
+      "#e6ebee",
+      "#ffffff"
+    ]
+  },
+  {
+    "level": 15,
+    "codepoint": "26c8",
+    "name": "?",
+    "colors": 7,
+    "avgDist": 157.3,
+    "palette": [
+      "#dee6ea",
+      "#acbfb6",
+      "#f0900e",
+      "#5ba9e6",
+      "#5494ac",
+      "#d28a19",
+      "#9e802c"
+    ]
+  },
+  {
+    "level": 16,
+    "codepoint": "1f438",
+    "name": "frog",
+    "colors": 8,
+    "avgDist": 131.8,
+    "palette": [
+      "#71ab54",
+      "#bedfac",
+      "#fcfefc",
+      "#e6ece3",
+      "#8abe6d",
+      "#3c4245",
+      "#a7a9ab",
+      "#a0c78b"
+    ]
+  },
+  {
+    "level": 17,
+    "codepoint": "1f4cf",
+    "name": "ruler",
+    "colors": 7,
+    "avgDist": 115.3,
+    "palette": [
+      "#d7b54c",
+      "#fcc94c",
+      "#4c4c3a",
+      "#66623e",
+      "#968544",
+      "#343734",
+      "#bca84a"
+    ]
+  },
+  {
+    "level": 18,
+    "codepoint": "2620",
+    "name": "?",
+    "colors": 8,
+    "avgDist": 112.8,
+    "palette": [
+      "#a8b6c0",
+      "#97a3a8",
+      "#cbd5dc",
+      "#52595e",
+      "#5e656b",
+      "#292f33",
+      "#737b80",
+      "#879095"
+    ]
+  },
+  {
+    "level": 19,
+    "codepoint": "1f6de",
+    "name": "?",
+    "colors": 8,
+    "avgDist": 122.2,
+    "palette": [
+      "#2c2e2c",
+      "#5f5f5f",
+      "#767877",
+      "#a1a2a2",
+      "#8c8f8f",
+      "#3d3d3d",
+      "#bbbdbd",
+      "#cbcdcc"
+    ]
+  },
+  {
+    "level": 20,
+    "codepoint": "1f5fb",
+    "name": "mount-fuji",
+    "colors": 7,
+    "avgDist": 130.3,
+    "palette": [
+      "#c1ccd3",
+      "#d7dee4",
+      "#a0afb0",
+      "#4b545b",
+      "#69727a",
+      "#333a3e",
+      "#8d959b"
+    ]
+  },
+  {
+    "level": 21,
+    "codepoint": "1f6f0",
+    "name": "satellite",
+    "colors": 8,
+    "avgDist": 121.9,
+    "palette": [
+      "#5fb1ed",
+      "#529fcd",
+      "#7dc2f4",
+      "#91a5ac",
+      "#c8d2da",
+      "#7eb6da",
+      "#f9aa34",
+      "#cf9c39"
+    ]
+  },
+  {
+    "level": 22,
+    "codepoint": "1f579",
+    "name": "joystick",
+    "colors": 7,
+    "avgDist": 108.6,
+    "palette": [
+      "#a14849",
+      "#da2f47",
+      "#99aab5",
+      "#657179",
+      "#333c40",
+      "#863342",
+      "#4c565e"
+    ]
+  },
+  {
+    "level": 23,
+    "codepoint": "1f344",
+    "name": "mushroom",
+    "colors": 8,
+    "avgDist": 104.2,
+    "palette": [
+      "#c13d48",
+      "#da2f44",
+      "#e1475b",
+      "#f2a6b6",
+      "#e96b7e",
+      "#ed8395",
+      "#97a9b2",
+      "#738f84"
+    ]
+  },
+  {
+    "level": 24,
+    "codepoint": "1f4e1",
+    "name": "satellite-antenna",
+    "colors": 8,
+    "avgDist": 109.6,
+    "palette": [
+      "#cb9c3a",
+      "#f9aa34",
+      "#64757c",
+      "#86949d",
+      "#9dacb4",
+      "#b5c2c8",
+      "#cad4db",
+      "#75848e"
+    ]
+  },
+  {
+    "level": 25,
+    "codepoint": "2194",
+    "name": "?",
+    "colors": 6,
+    "avgDist": 116.4,
+    "palette": [
+      "#3b88c3",
+      "#5597cb",
+      "#c8deee",
+      "#9dc4e1",
+      "#ffffff",
+      "#e1edf6"
+    ]
+  },
+  {
+    "level": 26,
+    "codepoint": "1f238",
+    "name": "?",
+    "colors": 7,
+    "avgDist": 112.9,
+    "palette": [
+      "#f4900c",
+      "#fcdeb5",
+      "#f9c176",
+      "#f6a330",
+      "#faca8c",
+      "#fff8ee",
+      "#fdedd9"
+    ]
+  },
+  {
+    "level": 27,
+    "codepoint": "1f642",
+    "name": "slightly-smiling",
+    "colors": 6,
+    "avgDist": 103.5,
+    "palette": [
+      "#e0b546",
+      "#fccb4d",
+      "#7f5b0c",
+      "#684700",
+      "#c69a31",
+      "#a0781d"
+    ]
+  },
+  {
+    "level": 28,
+    "codepoint": "1f4e5",
+    "name": "inbox",
+    "colors": 6,
+    "avgDist": 98.9,
+    "palette": [
+      "#76b055",
+      "#d69d81",
+      "#a2624d",
+      "#662113",
+      "#c2856c",
+      "#c1694f"
+    ]
+  },
+  {
+    "level": 29,
+    "codepoint": "1f9d1",
+    "name": "adult",
+    "colors": 6,
+    "avgDist": 101,
+    "palette": [
+      "#fdab33",
+      "#d79e44",
+      "#ffd457",
+      "#702d18",
+      "#c57250",
+      "#ddbf52"
+    ]
+  },
+  {
+    "level": 30,
+    "codepoint": "1f61a",
+    "name": "kissing-closed-eyes",
+    "colors": 7,
+    "avgDist": 106.4,
+    "palette": [
+      "#e1b243",
+      "#fccb4d",
+      "#855e13",
+      "#714f05",
+      "#bb912b",
+      "#fa7e8b",
+      "#a98022"
+    ]
+  },
+  {
+    "level": 31,
+    "codepoint": "1f6c0",
+    "name": "person-bathing",
+    "colors": 8,
+    "avgDist": 106,
+    "palette": [
+      "#c7d2d9",
+      "#9cadae",
+      "#fbab35",
+      "#ffd355",
+      "#bab457",
+      "#859c9b",
+      "#708d81",
+      "#abbbc4"
+    ]
+  },
+  {
+    "level": 32,
+    "codepoint": "1f468-200d-1f9b1",
+    "name": "?",
+    "colors": 7,
+    "avgDist": 99,
+    "palette": [
+      "#fbaa35",
+      "#ffd457",
+      "#bc8a3d",
+      "#662113",
+      "#d1c159",
+      "#c57150",
+      "#de9f55"
+    ]
+  },
+  {
+    "level": 33,
+    "codepoint": "1f968",
+    "name": "pretzel",
+    "colors": 6,
+    "avgDist": 92.4,
+    "palette": [
+      "#b18325",
+      "#f3900c",
+      "#f9b756",
+      "#f6a331",
+      "#fedda1",
+      "#d07c12"
+    ]
+  },
+  {
+    "level": 34,
+    "codepoint": "1f9a6",
+    "name": "otter",
+    "colors": 6,
+    "avgDist": 93.2,
+    "palette": [
+      "#8d7e6e",
+      "#a69185",
+      "#69746e",
+      "#3f4042",
+      "#b6a497",
+      "#c9b6aa"
+    ]
+  },
+  {
+    "level": 35,
+    "codepoint": "1f98b",
+    "name": "butterfly",
+    "colors": 6,
+    "avgDist": 98.4,
+    "palette": [
+      "#2f3a3c",
+      "#344e65",
+      "#4193cf",
+      "#52a8e9",
+      "#366685",
+      "#3e7fb0"
+    ]
+  },
+  {
+    "level": 36,
+    "codepoint": "1f6ac",
+    "name": "cigarette",
+    "colors": 8,
+    "avgDist": 99.3,
+    "palette": [
+      "#c9d4d9",
+      "#a8b7b6",
+      "#908767",
+      "#94ac9d",
+      "#758f81",
+      "#617479",
+      "#d99e82",
+      "#e1e8ed"
+    ]
+  },
+  {
+    "level": 37,
+    "codepoint": "1f45b",
+    "name": "purse",
+    "colors": 8,
+    "avgDist": 93.9,
+    "palette": [
+      "#7b8980",
+      "#acb0ab",
+      "#d0c8ca",
+      "#dba3ac",
+      "#dd8390",
+      "#e8596e",
+      "#e34055",
+      "#be6066"
+    ]
+  },
+  {
+    "level": 38,
+    "codepoint": "1f49e",
+    "name": "revolving-hearts",
+    "colors": 8,
+    "avgDist": 86.6,
+    "palette": [
+      "#b64047",
+      "#db2f44",
+      "#b99795",
+      "#df5466",
+      "#f0a9b6",
+      "#e8687a",
+      "#d9a2a9",
+      "#b35f61"
+    ]
+  },
+  {
+    "level": 39,
+    "codepoint": "1f32d",
+    "name": "hotdog",
+    "colors": 7,
+    "avgDist": 83.9,
+    "palette": [
+      "#df3645",
+      "#f18d49",
+      "#e3605f",
+      "#d9a084",
+      "#b39274",
+      "#f3b6a1",
+      "#fbb54c"
+    ]
+  },
+  {
+    "level": 40,
+    "codepoint": "1f5ef",
+    "name": "right-anger-bubble",
+    "colors": 6,
+    "avgDist": 90.1,
+    "palette": [
+      "#65767a",
+      "#77848d",
+      "#a1acb3",
+      "#dde4e9",
+      "#b9c2c9",
+      "#89959e"
+    ]
+  },
+  {
+    "level": 41,
+    "codepoint": "1f316",
+    "name": "waning-gibbous",
+    "colors": 7,
+    "avgDist": 92.2,
+    "palette": [
+      "#e4c97d",
+      "#fdd87a",
+      "#a19c81",
+      "#66747d",
+      "#b9ab81",
+      "#ffcd51",
+      "#7f8680"
+    ]
+  },
+  {
+    "level": 42,
+    "codepoint": "1f402",
+    "name": "ox",
+    "colors": 7,
+    "avgDist": 88.7,
+    "palette": [
+      "#a2afa7",
+      "#cbd1d6",
+      "#96846e",
+      "#866d4e",
+      "#c0694f",
+      "#c48675",
+      "#a0664b"
+    ]
+  },
+  {
+    "level": 43,
+    "codepoint": "1f9c0",
+    "name": "cheese-wedge",
+    "colors": 7,
+    "avgDist": 74.7,
+    "palette": [
+      "#d9c277",
+      "#fdd67e",
+      "#ffaf37",
+      "#ffc35c",
+      "#a68f40",
+      "#f79916",
+      "#d79f38"
+    ]
+  },
+  {
+    "level": 44,
+    "codepoint": "1fa9d",
+    "name": "hook",
+    "colors": 6,
+    "avgDist": 67.9,
+    "palette": [
+      "#f8cf7b",
+      "#e1a46e",
+      "#fac751",
+      "#d2b34f",
+      "#fcb137",
+      "#9d824e"
+    ]
+  },
+  {
+    "level": 45,
+    "codepoint": "1f94e",
+    "name": "softball",
+    "colors": 7,
+    "avgDist": 74.6,
+    "palette": [
+      "#cdd649",
+      "#dfe755",
+      "#e0b950",
+      "#d69f42",
+      "#dc4445",
+      "#c7c733",
+      "#d97144"
+    ]
+  },
+  {
+    "level": 46,
+    "codepoint": "1f9f1",
+    "name": "brick",
+    "colors": 8,
+    "avgDist": 81.1,
+    "palette": [
+      "#d1997d",
+      "#ac9072",
+      "#b94d46",
+      "#c6715a",
+      "#a40b23",
+      "#ae2c37",
+      "#b3694e",
+      "#8c242c"
+    ]
+  },
+  {
+    "level": 47,
+    "codepoint": "1f648",
+    "name": "see-no-evil",
+    "colors": 7,
+    "avgDist": 75.6,
+    "palette": [
+      "#ba6a51",
+      "#b35c3d",
+      "#d29177",
+      "#a26c55",
+      "#844335",
+      "#642116",
+      "#836d4f"
+    ]
+  },
+  {
+    "level": 48,
+    "codepoint": "1f646",
+    "name": "ok-person",
+    "colors": 7,
+    "avgDist": 59.6,
+    "palette": [
+      "#c8993e",
+      "#fbd357",
+      "#ffb139",
+      "#fc9945",
+      "#b77840",
+      "#f7783e",
+      "#dfad53"
+    ]
+  },
+  {
+    "level": 49,
+    "codepoint": "1f90f",
+    "name": "?",
+    "colors": 6,
+    "avgDist": 52.2,
+    "palette": [
+      "#d8c65a",
+      "#ffd65c",
+      "#f0a64b",
+      "#f8c052",
+      "#bab457",
+      "#c58d47"
+    ]
+  },
+  {
+    "level": 50,
+    "codepoint": "1faf3",
+    "name": "?",
+    "colors": 6,
+    "avgDist": 53.7,
+    "palette": [
+      "#fddb5d",
+      "#e0c559",
+      "#b7b257",
+      "#f1a54b",
+      "#f5bd53",
+      "#c08c47"
+    ]
+  }
+]

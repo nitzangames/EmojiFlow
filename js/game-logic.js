@@ -56,11 +56,11 @@ function computeOrbit(board, colorIndex) {
   for (var col = 0; col < size; col++) {
     for (var row = size - 1; row >= 0; row--) {
       var ci = board[row * size + col];
-      if (ci === 255) continue; // empty, keep scanning
+      if (ci === 255) continue;
       if (ci === colorIndex) {
         hits.push({ edge: 0, pos: col, row: row, col: col });
       }
-      break; // blocked by this cube whether it matches or not
+      break;
     }
   }
 

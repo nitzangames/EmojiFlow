@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v50';
+  var VERSION = 'v59';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
@@ -130,6 +130,8 @@
       y: startPos.y,
       ammo: shooter.ammo,
       clearedDuringAnim: {},
+      pendingBullets: 0,
+      stuck: false,
       path: [],
       stepIndex: 0,
       moving: false,
@@ -159,29 +161,46 @@
     return path;
   }
 
+  function finishOrbit(runner) {
+    // Wait for all pending bullets from this runner to land
+    if (runner.pendingBullets > 0) {
+      setTimeout(function() { finishOrbit(runner); }, 50);
+      return;
+    }
+
+    // All bullets landed — check if we need another pass
+    if (runner.shooter.ammo > 0) {
+      var newHits = computeOrbit(state.board, runner.shooter.colorIndex);
+      if (newHits.length > 0) {
+        runner.stuck = false;
+        runner.hits = newHits;
+        runner.path = buildOrbitPath(newHits);
+        runner.stepIndex = 0;
+        runner.clearedDuringAnim = {};
+        advanceOrbit(runner);
+        return;
+      }
+      // Has ammo but nothing reachable yet — mark as stuck and keep orbiting
+      runner.stuck = true;
+      runner.hits = [];
+      runner.path = buildOrbitPath([]);
+      runner.stepIndex = 0;
+      runner.clearedDuringAnim = {};
+      advanceOrbit(runner);
+      return;
+    }
+
+    // Ammo depleted — remove from orbit
+    state.orbitingCount--;
+    var idx = orbitRunners.indexOf(runner);
+    if (idx >= 0) orbitRunners.splice(idx, 1);
+    checkWinLose(state);
+    checkEndState();
+  }
+
   function advanceOrbit(runner) {
     if (runner.stepIndex >= runner.path.length) {
-      // Orbit complete — check if we need another pass
-      if (runner.shooter.ammo > 0) {
-        var newHits = computeOrbit(state.board, runner.shooter.colorIndex);
-        if (newHits.length > 0) {
-          // Do another orbit pass — no state changes, just rebuild path
-          runner.hits = newHits;
-          runner.path = buildOrbitPath(newHits);
-          runner.stepIndex = 0;
-          runner.clearedDuringAnim = {};
-          advanceOrbit(runner);
-          return;
-        }
-        // Has ammo but nothing reachable — shooter is lost
-      }
-
-      // Remove from orbit
-      state.orbitingCount--;
-      var idx = orbitRunners.indexOf(runner);
-      if (idx >= 0) orbitRunners.splice(idx, 1);
-      checkWinLose(state);
-      checkEndState();
+      finishOrbit(runner);
       return;
     }
 
@@ -203,6 +222,7 @@
           runner.ammo--;
           runner.shooter.ammo--;
 
+          runner.pendingBullets++;
           var bullet = { x: runner.x, y: runner.y, colorHex: runner.colorHex };
           bullets.push(bullet);
 
@@ -212,22 +232,19 @@
           var dist = Math.sqrt(dx * dx + dy * dy);
           var bulletSpeed = 120; // ms for full travel
 
-          (function(b, hitRow, hitCol, bColor, ci) {
+          (function(b, hitRow, hitCol, bColor, r) {
             tweenTo(b, { x: targetX, y: targetY }, bulletSpeed, 'linear', function() {
-              // Remove bullet
               var bi = bullets.indexOf(b);
               if (bi >= 0) bullets.splice(bi, 1);
-              // Clear the cell
               state.board[hitRow * GRID_SIZE + hitCol] = 255;
-              // Spawn explosion particles
               spawnParticles(targetX, targetY, bColor);
-              // Flash effect
               clearingCells.push({
                 row: hitRow, col: hitCol, colorHex: bColor,
                 scale: 1, alpha: 0.5, flashAlpha: 1, elapsed: 0,
               });
+              r.pendingBullets--;
             });
-          })(bullet, wp.hit.row, wp.hit.col, blockColor, cellIdx);
+          })(bullet, wp.hit.row, wp.hit.col, blockColor, runner);
 
           // Continue moving immediately — no pause
           advanceOrbit(runner);
@@ -312,6 +329,24 @@
         particles.splice(i, 1);
       }
     }
+
+    // Check if all orbiting shooters are stuck (game over condition)
+    if (gameState === 'playing' && orbitRunners.length > 0) {
+      var allStuck = true;
+      for (var i = 0; i < orbitRunners.length; i++) {
+        if (!orbitRunners[i].stuck) { allStuck = false; break; }
+      }
+      if (allStuck) {
+        var hasColumns = false;
+        for (var c = 0; c < state.columns.length; c++) {
+          if (state.columns[c].length > 0) { hasColumns = true; break; }
+        }
+        if (!hasColumns || orbitRunners.length >= NUM_WAIT_SLOTS) {
+          state.status = 'lost';
+          checkEndState();
+        }
+      }
+    }
   }
 
   // --- Render ---
@@ -345,6 +380,7 @@
     drawTrack(ctx);
     drawBoard(ctx, state, clearingCells);
     drawClearingCells(ctx, state, clearingCells);
+    drawTrackCounter(ctx, state.orbitingCount, NUM_WAIT_SLOTS);
     drawColumns(ctx, state, hitRects);
 
     // Draw orbit shooters

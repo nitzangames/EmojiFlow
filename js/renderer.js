@@ -430,7 +430,17 @@ function drawWaitSlots(ctx, state, hitRects) {
 // --- Columns ---
 
 function getColumnsY() {
-  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 30;
+  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 120;
+}
+
+function drawTrackCounter(ctx, orbitingCount, maxShooters) {
+  var y = BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 80;
+  var isFull = orbitingCount >= maxShooters;
+  ctx.font = 'bold 56px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = isFull ? '#ff6b6b' : '#81c784';
+  ctx.fillText(orbitingCount + ' / ' + maxShooters, 540, y);
 }
 
 function drawColumns(ctx, state, hitRects) {
@@ -563,7 +573,7 @@ function drawOrbitShooter(ctx, x, y, colorHex, ammo) {
   ctx.stroke();
 
   // Ammo label
-  ctx.font = 'bold 16px Arial';
+  ctx.font = 'bold 28px Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = contrastText(colorHex);
