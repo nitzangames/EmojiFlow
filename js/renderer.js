@@ -242,7 +242,7 @@ function drawTrack(ctx) {
 
 function drawBoard(ctx, state, clearingCells) {
   // Board background
-  ctx.fillStyle = '#0e0e22';
+  ctx.fillStyle = '#141425';
   ctx.beginPath();
   ctx.roundRect(BOARD_X - 4, BOARD_Y - 4, BOARD_PX + 8, BOARD_PX + 8, 6);
   ctx.fill();

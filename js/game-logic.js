@@ -35,6 +35,7 @@ function createGameState(board, palette, levelNumber, levelDef) {
     board: new Uint8Array(board),
     columns: columns,
     orbitingCount: 0, // number of shooters currently on the track
+    maxOrbiters: Math.min(5, shooters.length - 1), // colors - 1, capped at 5
     totalAmmo: totalAmmo,
     ammoUsed: 0,
     status: 'playing',
@@ -140,7 +141,7 @@ function applyOrbit(state, hits, shooter) {
 // Launch the top shooter from a column
 function launchFromColumn(state, colIndex) {
   if (state.status !== 'playing') return null;
-  if (countOutShooters(state) >= NUM_WAIT_SLOTS) return null;
+  if (countOutShooters(state) >= state.maxOrbiters) return null;
   var col = state.columns[colIndex];
   if (col.length === 0) return null;
 

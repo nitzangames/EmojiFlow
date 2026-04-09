@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v59';
+  var VERSION = 'v61';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
@@ -341,7 +341,7 @@
         for (var c = 0; c < state.columns.length; c++) {
           if (state.columns[c].length > 0) { hasColumns = true; break; }
         }
-        if (!hasColumns || orbitRunners.length >= NUM_WAIT_SLOTS) {
+        if (!hasColumns || orbitRunners.length >= state.maxOrbiters) {
           state.status = 'lost';
           checkEndState();
         }
@@ -380,7 +380,7 @@
     drawTrack(ctx);
     drawBoard(ctx, state, clearingCells);
     drawClearingCells(ctx, state, clearingCells);
-    drawTrackCounter(ctx, state.orbitingCount, NUM_WAIT_SLOTS);
+    drawTrackCounter(ctx, state.orbitingCount, state.maxOrbiters);
     drawColumns(ctx, state, hitRects);
 
     // Draw orbit shooters
