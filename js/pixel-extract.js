@@ -80,8 +80,10 @@ function quantizeColors(pixels, threshold) {
 }
 
 function extractBoard(image, quantizeThreshold) {
-  var srcSize = 72;
   var dstSize = GRID_SIZE;
+  // Scale to a size that divides evenly by dstSize
+  var blockSize = Math.max(2, Math.ceil(72 / dstSize));
+  var srcSize = dstSize * blockSize;
 
   var canvas = document.createElement('canvas');
   canvas.width = srcSize;

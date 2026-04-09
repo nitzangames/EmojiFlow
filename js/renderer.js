@@ -1,5 +1,5 @@
 // Layout constants — board fills nearly full width
-var CELL_SIZE = 44;
+var CELL_SIZE = 29;
 var TRACK_MARGIN = 55;
 var TRACK_WIDTH = 76;
 var BOARD_PX = GRID_SIZE * CELL_SIZE; // 792
@@ -48,6 +48,16 @@ function darkenColor(hex, amount) {
     Math.max(0, c.g - amount),
     Math.max(0, c.b - amount)
   );
+}
+
+function isLightColor(hex) {
+  var c = hexToRgb(hex);
+  var luminance = (0.299 * c.r + 0.587 * c.g + 0.114 * c.b);
+  return luminance > 150;
+}
+
+function contrastText(hex) {
+  return isLightColor(hex) ? '#000000' : '#ffffff';
 }
 
 function hexToRgba(hex, alpha) {
@@ -261,13 +271,13 @@ function drawBoard(ctx, state, clearingCells) {
       // Bottom shadow
       ctx.fillStyle = 'rgba(0,0,0,0.25)';
       ctx.beginPath();
-      ctx.roundRect(x + 1, y + 2, CELL_SIZE - 2, CELL_SIZE - 2, 4);
+      ctx.roundRect(x + 1, y + 2, CELL_SIZE - 2, CELL_SIZE - 2, 3);
       ctx.fill();
 
       // Cell
       ctx.fillStyle = color.hex;
       ctx.beginPath();
-      ctx.roundRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2, 4);
+      ctx.roundRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2, 3);
       ctx.fill();
     }
   }
@@ -285,7 +295,7 @@ function drawClearingCells(ctx, state, clearingCells) {
       ctx.globalAlpha = cell.flashAlpha;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.roundRect(x - s / 2, y - s / 2, s, s, 4);
+      ctx.roundRect(x - s / 2, y - s / 2, s, s, 3);
       ctx.fill();
       ctx.globalAlpha = 1;
     }
@@ -298,7 +308,7 @@ function drawClearingCells(ctx, state, clearingCells) {
       ctx.scale(cell.scale, cell.scale);
       ctx.fillStyle = cell.colorHex;
       ctx.beginPath();
-      ctx.roundRect(-s / 2, -s / 2, s, s, 4);
+      ctx.roundRect(-s / 2, -s / 2, s, s, 3);
       ctx.fill();
       ctx.restore();
     }
@@ -420,7 +430,7 @@ function drawWaitSlots(ctx, state, hitRects) {
 // --- Columns ---
 
 function getColumnsY() {
-  return getWaitSlotY() + WAIT_SLOT_H + 60;
+  return BOARD_Y + BOARD_PX + TRACK_MARGIN + TRACK_WIDTH / 2 + 30;
 }
 
 function drawColumns(ctx, state, hitRects) {
@@ -556,7 +566,7 @@ function drawOrbitShooter(ctx, x, y, colorHex, ammo) {
   ctx.font = 'bold 16px Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = contrastText(colorHex);
   ctx.fillText(ammo.toString(), x, y);
 }
 
@@ -606,29 +616,29 @@ function drawWinOverlay(ctx, stars, levelDef, emojiImage) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#ffd93d';
-  ctx.fillText(starText, 540, 800);
+  ctx.fillText(starText, 540, 680);
 
   ctx.font = 'bold 64px Arial';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText('Level Complete!', 540, 920);
+  ctx.fillText('Level Complete!', 540, 830);
 
   if (emojiImage) {
-    ctx.drawImage(emojiImage, 540 - 72, 1000 - 72, 144, 144);
+    ctx.drawImage(emojiImage, 540 - 72, 960 - 72, 144, 144);
   }
 
   // Next Level button
   ctx.fillStyle = '#4fc3f7';
   ctx.beginPath();
-  ctx.roundRect(340, 1095, 400, 90, 12);
+  ctx.roundRect(340, 1120, 400, 90, 12);
   ctx.fill();
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.font = 'bold 40px Arial';
   ctx.fillStyle = '#000000';
-  ctx.fillText('Next Level', 540, 1140);
+  ctx.fillText('Next Level', 540, 1165);
 
-  return { x: 340, y: 1095, w: 400, h: 90 };
+  return { x: 340, y: 1120, w: 400, h: 90 };
 }
 
 function drawLoseOverlay(ctx) {
@@ -699,10 +709,19 @@ function drawTitleScreen(ctx, currentLevel, version) {
   ctx.fillStyle = '#ffffff';
   ctx.fillText('PLAY \u2014 Level ' + currentLevel, 540, 1050);
 
+  // Reset button
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.beginPath();
+  ctx.roundRect(390, 1150, 300, 60, 12);
+  ctx.fill();
+  ctx.font = '28px Arial';
+  ctx.fillStyle = '#666688';
+  ctx.fillText('Reset Progress', 540, 1180);
+
   // Version
   ctx.font = '24px Arial';
   ctx.fillStyle = '#4a4a7e';
   ctx.fillText(version, 540, 1800);
 
-  return { x: 290, y: 990, w: 500, h: 120 };
+  return { play: { x: 290, y: 990, w: 500, h: 120 }, reset: { x: 390, y: 1150, w: 300, h: 60 } };
 }

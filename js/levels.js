@@ -62,6 +62,6 @@ var LEVELS = [
   { emoji: '1f30b', name: 'Volcano', ammoBuffer: 0, quantizeThreshold: 25 },             // final boss
 ];
 
-var GRID_SIZE = 18;
+var GRID_SIZE = 27;
 var NUM_COLUMNS = 4;
 var NUM_WAIT_SLOTS = 5;

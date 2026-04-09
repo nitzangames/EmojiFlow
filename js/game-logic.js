@@ -34,7 +34,6 @@ function createGameState(board, palette, levelNumber, levelDef) {
     palette: palette,
     board: new Uint8Array(board),
     columns: columns,
-    waitSlots: [null, null, null, null, null],
     orbitingCount: 0, // number of shooters currently on the track
     totalAmmo: totalAmmo,
     ammoUsed: 0,
@@ -42,13 +41,9 @@ function createGameState(board, palette, levelNumber, levelDef) {
   };
 }
 
-// Count how many shooters are currently "out" (orbiting + in wait slots)
+// Count how many shooters are currently orbiting
 function countOutShooters(state) {
-  var count = state.orbitingCount;
-  for (var s = 0; s < NUM_WAIT_SLOTS; s++) {
-    if (state.waitSlots[s] !== null) count++;
-  }
-  return count;
+  return state.orbitingCount;
 }
 
 // Compute all shots a shooter takes during one clockwise orbit
@@ -155,18 +150,6 @@ function launchFromColumn(state, colIndex) {
   return { shooter: shooter, hits: hits };
 }
 
-// Launch a shooter from a wait slot
-function launchFromWaitSlot(state, slotIndex) {
-  if (state.status !== 'playing') return null;
-  var shooter = state.waitSlots[slotIndex];
-  if (shooter === null) return null;
-
-  state.waitSlots[slotIndex] = null;
-  state.orbitingCount++;
-  var hits = computeOrbit(state.board, shooter.colorIndex);
-  return { shooter: shooter, hits: hits };
-}
-
 // Check if the game is won or lost
 function checkWinLose(state) {
   var cubesRemain = false;
@@ -187,11 +170,6 @@ function checkWinLose(state) {
   var hasShooters = false;
   for (var c = 0; c < state.columns.length; c++) {
     if (state.columns[c].length > 0) { hasShooters = true; break; }
-  }
-  if (!hasShooters) {
-    for (var s = 0; s < state.waitSlots.length; s++) {
-      if (state.waitSlots[s] !== null) { hasShooters = true; break; }
-    }
   }
   if (!hasShooters) {
     state.status = 'lost';

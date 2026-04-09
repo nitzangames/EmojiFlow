@@ -2,7 +2,7 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v48';
+  var VERSION = 'v50';
   var gameState = 'title'; // title | loading | playing | overlay
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
@@ -81,8 +81,6 @@
         if (hitTest(gx, gy, hr)) {
           if (hr.type === 'column') {
             onColumnTap(hr.index);
-          } else if (hr.type === 'wait') {
-            onWaitSlotTap(hr.index);
           }
           return;
         }
@@ -93,12 +91,6 @@
   // --- Game Actions ---
   function onColumnTap(colIndex) {
     var result = launchFromColumn(state, colIndex);
-    if (!result) return;
-    runOrbit(result.shooter, result.hits);
-  }
-
-  function onWaitSlotTap(slotIndex) {
-    var result = launchFromWaitSlot(state, slotIndex);
     if (!result) return;
     runOrbit(result.shooter, result.hits);
   }
@@ -181,15 +173,7 @@
           advanceOrbit(runner);
           return;
         }
-        // Has ammo but nothing reachable — park in wait slot
-        var placed = false;
-        for (var s = 0; s < NUM_WAIT_SLOTS; s++) {
-          if (state.waitSlots[s] === null) {
-            state.waitSlots[s] = runner.shooter;
-            placed = true;
-            break;
-          }
-        }
+        // Has ammo but nothing reachable — shooter is lost
       }
 
       // Remove from orbit
@@ -361,7 +345,6 @@
     drawTrack(ctx);
     drawBoard(ctx, state, clearingCells);
     drawClearingCells(ctx, state, clearingCells);
-    drawWaitSlots(ctx, state, hitRects);
     drawColumns(ctx, state, hitRects);
 
     // Draw orbit shooters
