@@ -651,6 +651,57 @@ function drawWinOverlay(ctx, stars, levelDef, emojiImage) {
   return { x: 340, y: 1120, w: 400, h: 90 };
 }
 
+function drawPauseOverlay(ctx) {
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.fillRect(0, 0, 1080, 1920);
+
+  ctx.font = 'bold 96px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('Paused', 540, 720);
+
+  var btnX = 290, btnW = 500, btnH = 110, btnGap = 36;
+  var y1 = 920, y2 = y1 + btnH + btnGap, y3 = y2 + btnH + btnGap;
+
+  ctx.fillStyle = '#4fc3f7';
+  ctx.beginPath();
+  ctx.roundRect(btnX, y1, btnW, btnH, 14);
+  ctx.fill();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.font = 'bold 44px Arial';
+  ctx.fillStyle = '#000000';
+  ctx.fillText('Resume', 540, y1 + btnH / 2 + 4);
+
+  ctx.fillStyle = '#ffd93d';
+  ctx.beginPath();
+  ctx.roundRect(btnX, y2, btnW, btnH, 14);
+  ctx.fill();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.fillStyle = '#000000';
+  ctx.fillText('Restart Level', 540, y2 + btnH / 2 + 4);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.beginPath();
+  ctx.roundRect(btnX, y3, btnW, btnH, 14);
+  ctx.fill();
+  ctx.strokeStyle = '#888899';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('Back to Title', 540, y3 + btnH / 2 + 4);
+
+  return {
+    resume: { x: btnX, y: y1, w: btnW, h: btnH },
+    restart: { x: btnX, y: y2, w: btnW, h: btnH },
+    title: { x: btnX, y: y3, w: btnW, h: btnH },
+  };
+}
+
 function drawLoseOverlay(ctx) {
   ctx.fillStyle = 'rgba(0,0,0,0.7)';
   ctx.fillRect(0, 0, 1080, 1920);

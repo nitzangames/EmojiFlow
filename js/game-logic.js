@@ -101,7 +101,32 @@ function computeOrbit(board, colorIndex) {
     }
   }
 
-  return hits;
+  // Each cell can be reachable from multiple edges (e.g. a corner cell is
+  // both the topmost of its column and the leftmost of its row). Without
+  // dedup, edges later in the orbit (esp. edge 3) get pre-empted because
+  // their target cells were already cleared by earlier-edge fires —
+  // symmetric shapes end up with edge 3 firing zero bullets. Assign each
+  // cell to the least-loaded edge so all four edges get fire action.
+  var cellMap = {};
+  for (var i = 0; i < hits.length; i++) {
+    var key = hits[i].row * size + hits[i].col;
+    if (!cellMap[key]) cellMap[key] = [];
+    cellMap[key].push(hits[i]);
+  }
+  var keys = Object.keys(cellMap);
+  keys.sort(function(a, b) { return parseInt(a) - parseInt(b); });
+  var edgeLoad = [0, 0, 0, 0];
+  var result = [];
+  for (var i = 0; i < keys.length; i++) {
+    var cellHits = cellMap[keys[i]];
+    var best = 0;
+    for (var j = 1; j < cellHits.length; j++) {
+      if (edgeLoad[cellHits[j].edge] < edgeLoad[cellHits[best].edge]) best = j;
+    }
+    edgeLoad[cellHits[best].edge]++;
+    result.push(cellHits[best]);
+  }
+  return result;
 }
 
 // Apply orbit hits to game state

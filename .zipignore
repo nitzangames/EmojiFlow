@@ -5,6 +5,11 @@ tests/*
 mockups/*
 screenshots/*
 screenshot.js
+gameplay-screenshots.js
+analyze_*.js
+select_levels.js
+selected_levels.json
+twemoji_color_analysis.json
 screenshot-*.png
 ss-*.png
 thumb-*.png

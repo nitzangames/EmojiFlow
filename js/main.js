@@ -2,8 +2,8 @@
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
 
-  var VERSION = 'v61';
-  var gameState = 'title'; // title | loading | playing | overlay
+  var VERSION = 'v63';
+  var gameState = 'title'; // title | loading | playing | overlay | paused
   var overlayType = null;  // 'won' | 'lost'
   var state = null;        // GameState from game-logic.js
   var levelNum = 1;
@@ -12,6 +12,7 @@
   var hitRects = [];
   var overlayBtnRect = null;
   var titleBtnRect = null;
+  var pauseBtnRects = null;
 
   // Orbit animation state
   var orbitRunners = []; // active orbit animations
@@ -75,7 +76,25 @@
       return;
     }
 
+    if (gameState === 'paused') {
+      if (pauseBtnRects) {
+        if (hitTest(gx, gy, pauseBtnRects.resume)) {
+          gameState = 'playing';
+        } else if (hitTest(gx, gy, pauseBtnRects.restart)) {
+          loadLevel(levelNum);
+        } else if (hitTest(gx, gy, pauseBtnRects.title)) {
+          gameState = 'title';
+        }
+      }
+      return;
+    }
+
     if (gameState === 'playing') {
+      var dgx = gx - 80, dgy = gy - 60;
+      if (dgx * dgx + dgy * dgy <= 32 * 32) {
+        gameState = 'paused';
+        return;
+      }
       for (var i = 0; i < hitRects.length; i++) {
         var hr = hitRects[i];
         if (hitTest(gx, gy, hr)) {
@@ -298,6 +317,7 @@
 
   // --- Update ---
   function update(dt) {
+    if (gameState === 'paused') return;
     updateTweens(dt);
 
     // Update clearing cell animations
@@ -407,6 +427,8 @@
       } else {
         overlayBtnRect = drawLoseOverlay(ctx);
       }
+    } else if (gameState === 'paused') {
+      pauseBtnRects = drawPauseOverlay(ctx);
     }
   }
 
@@ -418,6 +440,38 @@
     render();
     requestAnimationFrame(gameLoop);
   }
+
+  // --- Screenshot mode ---
+  // Triggered by ?screenshot=1 (platform PlaySDK convention) or ?level=N.
+  // Skips the title screen and auto-loads a level so external tools can
+  // capture gameplay frames. Optional params:
+  //   level=N — load level N (defaults to a visually interesting level)
+  //   autoplay=1 — automatically launch a shooter after load
+  (function initScreenshotMode() {
+    var params = new URLSearchParams(window.location.search);
+    var sdkScreenshot = !!(window.PlaySDK && window.PlaySDK.screenshotMode);
+    var urlScreenshot = params.get('screenshot') === '1';
+    var levelParam = parseInt(params.get('level') || '0', 10);
+    if (!sdkScreenshot && !urlScreenshot && !levelParam) return;
+
+    var target = levelParam > 0 && levelParam <= LEVELS.length ? levelParam : 1;
+    loadLevel(target);
+
+    if (params.get('autoplay') === '1') {
+      var tries = 0;
+      var tryLaunch = function() {
+        tries++;
+        if (gameState === 'playing' && state && state.columns) {
+          for (var c = 0; c < state.columns.length; c++) {
+            if (state.columns[c].length > 0) { onColumnTap(c); break; }
+          }
+          return;
+        }
+        if (tries < 40) setTimeout(tryLaunch, 100);
+      };
+      setTimeout(tryLaunch, 300);
+    }
+  })();
 
   // --- Start ---
   requestAnimationFrame(gameLoop);
